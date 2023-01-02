@@ -26,6 +26,13 @@ func main() {
 	}
 
 	for _, i := range torrentsList {
+		if i.Tracker == "" {
+			trackerList, err := webui.GetTorrentTrackers(i.Hash)
+			if err == nil && len(trackerList) > 0 {
+				i.Tracker = trackerList[0].Url // 暂时默认用第一个
+			}
+		}
+
 		tag, err := i.GetTrackerTag()
 		if err != nil {
 			fmt.Printf("[ERR] get %s tag err: %v\n", i.Name, err)

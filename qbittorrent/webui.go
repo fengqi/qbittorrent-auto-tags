@@ -34,7 +34,7 @@ func (w *WebUI) GetTorrentList() ([]*TorrentInfo, error) {
 	url := fmt.Sprintf("%s/api/v2/torrents/info?filter=all&tag=&limit=%d", w.Host, 1000)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	for _, item := range w.Cookie {
@@ -43,22 +43,59 @@ func (w *WebUI) GetTorrentList() ([]*TorrentInfo, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	var torrentList []*TorrentInfo
 	err = json.Unmarshal(bytes, &torrentList)
-	if err != nil {
-		panic(err)
-	}
 
 	return torrentList, nil
+}
+
+func (w *WebUI) GetTorrentTrackers(hash string) ([]*TorrentTracker, error) {
+	url := fmt.Sprintf("%s/api/v2/torrents/trackers?hash=%s", w.Host, hash)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, item := range w.Cookie {
+		req.AddCookie(item)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var trackerList []*TorrentTracker
+	err = json.Unmarshal(bytes, &trackerList)
+	if err != nil {
+		return nil, err
+	}
+
+	i := 0
+	for _, item := range trackerList {
+		// tier >=0 的才有效
+		if item.Tier >= 0 {
+			trackerList[i] = item
+			i++
+		}
+	}
+
+	return trackerList[:i], nil
 }
 
 func (w *WebUI) AddTags(hashes, tag string) error {
