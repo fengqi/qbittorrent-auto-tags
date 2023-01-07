@@ -3,11 +3,14 @@ package main
 import (
 	"fengqi/qbittorrent-auto-tags/config"
 	"fengqi/qbittorrent-auto-tags/qbittorrent"
+	"flag"
 	"fmt"
 )
 
 func main() {
-	c, err := config.LoadConfig("./config.json")
+	configFile := flag.String("c", "./config.json", "config file path")
+	flag.Parse()
+	c, err := config.LoadConfig(*configFile)
 	if err != nil {
 		fmt.Printf("[ERR] load config err: %v\n", err)
 		return
