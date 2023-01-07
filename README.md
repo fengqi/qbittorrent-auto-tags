@@ -6,6 +6,9 @@
 根据平台下载对应的release文件，复制 example.config.json 为 config.json，修改 qbittorrent 的配置信息以及自定义标签，然后放到定时任务定期运行。
 
 > 目前提供：Linux、Mac、Windows的二进制文件，其他平台可自行编译
+>
+> 也可以使用`设置-下载-运行外部程序`代替定时任务
+
 
 # 注释事项
 
