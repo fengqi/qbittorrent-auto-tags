@@ -1,3 +1,5 @@
+# 请使用最新的工具：https://github.com/fengqi/qbittorrent-tool
+
 # qbittorrent-auto-tags
 
 根据`tracker`地址给种子设置标签，如 `https://tracker.baidu.com` 则设置标签为 `baidu.com`你也可以在 `config.json` 里配置别名。
